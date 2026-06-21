@@ -39,7 +39,8 @@ fun SatelliteDetailScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.Start // Respects RTL
         ) {
             calculations?.let { calc ->
                 CalculationCard(
@@ -79,7 +80,10 @@ fun CalculationCard(title: String, value: String) {
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.Start // Respects RTL
+        ) {
             Text(text = title, style = MaterialTheme.typography.labelLarge)
             Text(text = value, style = MaterialTheme.typography.headlineMedium)
         }

@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import kotlinx.coroutines.delay
@@ -59,7 +60,8 @@ fun SplashScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
             // Satellite Icon Animation
             Box(
@@ -95,17 +97,23 @@ fun SplashScreen(
                 style = MaterialTheme.typography.headlineLarge,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.alpha(alphaAnim)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(alphaAnim)
             )
             
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Tagline
+            // Welcome Message
             Text(
                 text = KurdishStrings.SPLASH_WELCOME,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.8f),
-                modifier = Modifier.alpha(alphaAnim)
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(alphaAnim)
             )
             
             Spacer(modifier = Modifier.height(48.dp))

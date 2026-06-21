@@ -35,7 +35,7 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start // Respects RTL, so it will be Right
         ) {
             HomeCard(
                 title = KurdishStrings.HOME_SATELLITES,
@@ -71,9 +71,10 @@ fun HomeCard(
                 .padding(24.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.Start // Respects RTL
         ) {
             Icon(imageVector = icon, contentDescription = title, modifier = Modifier.size(32.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(text = title, style = MaterialTheme.typography.titleLarge)
         }
     }

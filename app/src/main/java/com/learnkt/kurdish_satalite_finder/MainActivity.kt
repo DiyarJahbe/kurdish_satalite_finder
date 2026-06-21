@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import com.learnkt.kurdish_satalite_finder.presentation.navigation.NavGraph
 import com.learnkt.kurdish_satalite_finder.presentation.theme.Kurdish_satalite_finderTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,9 +20,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Kurdish_satalite_finderTheme {
-                Surface {
-                    val navController = rememberNavController()
-                    NavGraph(navController = navController)
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                    Surface {
+                        val navController = rememberNavController()
+                        NavGraph(navController = navController)
+                    }
                 }
             }
         }

@@ -89,9 +89,9 @@ fun SatelliteItem(
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Start // Respects RTL
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(text = satellite.name, style = MaterialTheme.typography.titleMedium)
                 Text(
                     text = "${satellite.longitude}°",

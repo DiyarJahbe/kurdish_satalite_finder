@@ -8,6 +8,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.*
@@ -78,12 +80,12 @@ fun OnboardingScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Skip Button
+            // Skip Button (Aligned to Start in RTL = Right)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.Start
             ) {
                 TextButton(
                     onClick = onOnboardingComplete,
@@ -92,11 +94,6 @@ fun OnboardingScreen(
                     )
                 ) {
                     Text(KurdishStrings.SKIP, fontWeight = FontWeight.Bold)
-                    Icon(
-                        imageVector = Icons.Default.SkipNext,
-                        contentDescription = KurdishStrings.SKIP,
-                        modifier = Modifier.size(20.dp)
-                    )
                 }
             }
 
@@ -161,7 +158,7 @@ fun OnboardingScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    imageVector = Icons.Default.ArrowForward,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = KurdishStrings.NEXT
                 )
             }
