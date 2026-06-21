@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Satellite Finder</string>
+    <string name="splash_title">Welcome to Satellite Finder</string>
+    <string name="home_title">Home</string>
+    <string name="satellites">Satellites</string>
+    <string name="favorites">Favorites</string>
+    <string name="compass">Compass</string>
+    <string name="ar_mode">AR Mode</string>
+    <string name="search_hint">Search satellite...</string>
+    <string name="azimuth">Azimuth</string>
+    <string name="elevation">Elevation</string>
+    <string name="lnb_skew">LNB Skew</string>
+    <string name="location_status">Location Status</string>
+    <string name="get_location">Get Location</string>
+    <string name="satellite_detail">Satellite Detail</string>
+    <string name="turn_left">Turn Left</string>
+    <string name="turn_right">Turn Right</string>
+    <string name="perfect_alignment">Perfect Alignment!</string>
+    <string name="loading">Loading...</string>
+    <string name="no_satellites">No satellites found</string>
+</resources>

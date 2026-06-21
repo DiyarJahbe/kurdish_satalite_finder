@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">دۆزەرەوەی مانگی دەستکرد</string>
+    <string name="splash_title">بەخێربێن بۆ دۆزەرەوەی مانگی دەستکرد</string>
+    <string name="home_title">سەرەکی</string>
+    <string name="satellites">مانگە دەستکردەکان</string>
+    <string name="favorites">دڵخوازەکان</string>
+    <string name="compass">کۆمپاس</string>
+    <string name="ar_mode">بینینی ڕاستەوخۆ (AR)</string>
+    <string name="search_hint">بگەڕێ بۆ مانگی دەستکرد...</string>
+    <string name="azimuth">ئاسۆیی (Azimuth)</string>
+    <string name="elevation">بەرزایی (Elevation)</string>
+    <string name="lnb_skew">لاری (LNB Skew)</string>
+    <string name="location_status">باری شوێن</string>
+    <string name="get_location">شوێن دیاری بکە</string>
+    <string name="satellite_detail">وردەکاری مانگی دەستکرد</string>
+    <string name="turn_left">بیسوڕێنە بۆ چەپ</string>
+    <string name="turn_right">بیسوڕێنە بۆ ڕاست</string>
+    <string name="perfect_alignment">ڕێکخستنی تەواو!</string>
+    <string name="loading">چاوەڕوانبە...</string>
+    <string name="no_satellites">هیچ مانگێکی دەستکرد نەدۆزرایەوە</string>
+</resources>
