@@ -1,7 +1,6 @@
 package com.learnkt.kurdish_satalite_finder.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -28,7 +27,7 @@ fun NavGraph(
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(
-                onNavigateToOnboarding = {
+                onNavigateToHome = {
                     if (isOnboardingCompleted) {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
@@ -54,8 +53,8 @@ fun NavGraph(
         composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToList = { navController.navigate(Screen.List.route) },
-                onNavigateToFavorites = { navController.navigate(Screen.List.route) }, // Filter favorites in list
-                onNavigateToCompass = { navController.navigate(Screen.List.route) } // Navigate to list first to select satellite
+                onNavigateToFavorites = { navController.navigate(Screen.List.route) },
+                onNavigateToCompass = { navController.navigate(Screen.List.route) }
             )
         }
         composable(Screen.List.route) {

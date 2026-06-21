@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(
@@ -36,18 +37,18 @@ fun OnboardingScreen(
 ) {
     val pages = listOf(
         OnboardingPage(
-            title = "Discover Satellites",
-            description = "Explore hundreds of satellites orbiting Earth. Find detailed information about each one.",
+            title = KurdishStrings.ONBOARDING_TITLE_1,
+            description = KurdishStrings.ONBOARDING_DESC_1,
             iconColor = Color(0xFF4CAF50)
         ),
         OnboardingPage(
-            title = "Track in Real-Time",
-            description = "Get real-time tracking data and know exactly where satellites are positioned.",
+            title = KurdishStrings.ONBOARDING_TITLE_2,
+            description = KurdishStrings.ONBOARDING_DESC_2,
             iconColor = Color(0xFF2196F3)
         ),
         OnboardingPage(
-            title = "Find with Compass",
-            description = "Use the built-in compass to locate satellites in the sky from your location.",
+            title = KurdishStrings.ONBOARDING_TITLE_3,
+            description = KurdishStrings.ONBOARDING_DESC_3,
             iconColor = Color(0xFFFF9800)
         )
     )
@@ -90,10 +91,10 @@ fun OnboardingScreen(
                         contentColor = Color.White
                     )
                 ) {
-                    Text("Skip", fontWeight = FontWeight.Bold)
+                    Text(KurdishStrings.SKIP, fontWeight = FontWeight.Bold)
                     Icon(
                         imageVector = Icons.Default.SkipNext,
-                        contentDescription = "Skip",
+                        contentDescription = KurdishStrings.SKIP,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -154,14 +155,14 @@ fun OnboardingScreen(
                 )
             ) {
                 Text(
-                    text = if (currentPage == pages.size - 1) "Get Started" else "Next",
+                    text = if (currentPage == pages.size - 1) KurdishStrings.GET_STARTED else KurdishStrings.NEXT,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "Next"
+                    contentDescription = KurdishStrings.NEXT
                 )
             }
         }

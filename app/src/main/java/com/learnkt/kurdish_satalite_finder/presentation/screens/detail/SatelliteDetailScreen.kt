@@ -7,10 +7,9 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.learnkt.kurdish_satalite_finder.R
+import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,15 +43,15 @@ fun SatelliteDetailScreen(
         ) {
             calculations?.let { calc ->
                 CalculationCard(
-                    title = stringResource(id = R.string.azimuth),
+                    title = KurdishStrings.AZIMUTH,
                     value = String.format(Locale.US, "%.2f°", calc.azimuth)
                 )
                 CalculationCard(
-                    title = stringResource(id = R.string.elevation),
+                    title = KurdishStrings.ELEVATION,
                     value = String.format(Locale.US, "%.2f°", calc.elevation)
                 )
                 CalculationCard(
-                    title = stringResource(id = R.string.lnb_skew),
+                    title = KurdishStrings.LNB_SKEW,
                     value = String.format(Locale.US, "%.2f°", calc.lnbSkew)
                 )
             }
@@ -66,7 +65,7 @@ fun SatelliteDetailScreen(
             ) {
                 Icon(Icons.Default.LocationOn, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(id = R.string.compass))
+                Text(KurdishStrings.HOME_COMPASS)
             }
         }
     }

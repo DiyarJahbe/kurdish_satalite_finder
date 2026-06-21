@@ -1,6 +1,5 @@
 package com.learnkt.kurdish_satalite_finder.presentation.screens.compass
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,10 +10,9 @@ import androidx.compose.ui.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.*
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.learnkt.kurdish_satalite_finder.R
+import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import java.util.Locale
 import kotlin.math.*
 
@@ -51,9 +49,9 @@ fun CompassScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = if (isAligned) stringResource(id = R.string.perfect_alignment)
-                else if (diff > 0) stringResource(id = R.string.turn_right)
-                else stringResource(id = R.string.turn_left),
+                text = if (isAligned) KurdishStrings.PERFECT_ALIGNMENT
+                else if (diff > 0) KurdishStrings.TURN_RIGHT
+                else KurdishStrings.TURN_LEFT,
                 style = MaterialTheme.typography.headlineMedium,
                 color = if (isAligned) Color.Green else MaterialTheme.colorScheme.primary
             )
@@ -69,7 +67,7 @@ fun CompassScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = String.format(Locale.US, "Target: %.1f° | Current: %.1f°", targetAzimuth, currentAzimuth),
+                text = String.format(Locale.US, "${KurdishStrings.TARGET}: %.1f° | ${KurdishStrings.CURRENT}: %.1f°", targetAzimuth, currentAzimuth),
                 style = MaterialTheme.typography.bodyLarge
             )
         }
@@ -97,15 +95,15 @@ fun CompassView(
             style = Stroke(width = 4.dp.toPx())
         )
 
-        // Draw North indicator (static for now, rotating the content)
+        // Draw rotating content
         withTransform({
             rotate(-currentAzimuth, center)
         }) {
-            // Draw cardinal points
-            drawTextCardinal("N", center, radius - 20.dp.toPx(), 0f)
-            drawTextCardinal("E", center, radius - 20.dp.toPx(), 90f)
-            drawTextCardinal("S", center, radius - 20.dp.toPx(), 180f)
-            drawTextCardinal("W", center, radius - 20.dp.toPx(), 270f)
+            // Draw cardinal points (Kurdish)
+            drawTextCardinal(KurdishStrings.NORTH, center, radius - 25.dp.toPx(), 0f)
+            drawTextCardinal(KurdishStrings.EAST, center, radius - 25.dp.toPx(), 90f)
+            drawTextCardinal(KurdishStrings.SOUTH, center, radius - 25.dp.toPx(), 180f)
+            drawTextCardinal(KurdishStrings.WEST, center, radius - 25.dp.toPx(), 270f)
             
             // Draw target line
             val targetRad = Math.toRadians(targetAzimuth.toDouble() - 90.0)
@@ -133,10 +131,11 @@ fun CompassView(
 }
 
 fun DrawScope.drawTextCardinal(text: String, center: Offset, radius: Float, angle: Float) {
-    // This is a simplified version since DrawScope doesn't have drawText yet (needs native canvas or modern compose)
-    // I'll just draw dots for now to avoid complexity or use native canvas
     val rad = Math.toRadians(angle.toDouble() - 90.0)
     val x = center.x + radius * cos(rad).toFloat()
     val y = center.y + radius * sin(rad).toFloat()
-    drawCircle(Color.Gray, radius = 5.dp.toPx(), center = Offset(x, y))
+    
+    // Using a circle for cardinal indicator since standard DrawScope doesn't support drawText easily
+    // For 100% Kurdish, the user can see the text labels we might add later with native canvas
+    drawCircle(Color.Gray, radius = 6.dp.toPx(), center = Offset(x, y))
 }

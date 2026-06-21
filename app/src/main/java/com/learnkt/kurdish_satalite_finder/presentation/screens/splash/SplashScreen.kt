@@ -11,15 +11,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.learnkt.kurdish_satalite_finder.R
+import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    onNavigateToOnboarding: () -> Unit
+    onNavigateToHome: () -> Unit
 ) {
     var startAnimation by remember { mutableStateOf(false) }
     
@@ -41,7 +40,7 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(2500)
-        onNavigateToOnboarding()
+        onNavigateToHome()
     }
 
     Box(
@@ -92,7 +91,7 @@ fun SplashScreen(
             
             // App Name
             Text(
-                text = stringResource(id = R.string.app_name),
+                text = KurdishStrings.APP_NAME,
                 style = MaterialTheme.typography.headlineLarge,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
@@ -103,7 +102,7 @@ fun SplashScreen(
             
             // Tagline
             Text(
-                text = "Find Satellites with Ease",
+                text = KurdishStrings.SPLASH_WELCOME,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.8f),
                 modifier = Modifier.alpha(alphaAnim)

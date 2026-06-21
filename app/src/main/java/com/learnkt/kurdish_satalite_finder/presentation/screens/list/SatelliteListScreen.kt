@@ -11,10 +11,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.learnkt.kurdish_satalite_finder.R
+import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import com.learnkt.kurdish_satalite_finder.domain.model.Satellite
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +29,7 @@ fun SatelliteListScreen(
         topBar = {
             Column {
                 CenterAlignedTopAppBar(
-                    title = { Text(stringResource(id = R.string.satellites)) }
+                    title = { Text(KurdishStrings.HOME_SATELLITES) }
                 )
                 TextField(
                     value = searchQuery,
@@ -38,7 +37,7 @@ fun SatelliteListScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    placeholder = { Text(stringResource(id = R.string.search_hint)) },
+                    placeholder = { Text(KurdishStrings.SEARCH_SATELLITE) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
@@ -50,19 +49,25 @@ fun SatelliteListScreen(
             }
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(satellites) { satellite ->
-                SatelliteItem(
-                    satellite = satellite,
-                    onClick = { onNavigateToDetail(satellite.id) },
-                    onToggleFavorite = { viewModel.toggleFavorite(satellite) }
-                )
+        if (satellites.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = KurdishStrings.NO_SATELLITES_FOUND)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(satellites) { satellite ->
+                    SatelliteItem(
+                        satellite = satellite,
+                        onClick = { onNavigateToDetail(satellite.id) },
+                        onToggleFavorite = { viewModel.toggleFavorite(satellite) }
+                    )
+                }
             }
         }
     }
