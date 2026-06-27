@@ -43,7 +43,12 @@ fun CompassScreen(
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ -> }
+    ) { permissions ->
+        if (permissions.values.any { it }) {
+            viewModel.loadSatellite()
+            viewModel.startLocationUpdates()
+        }
+    }
 
     LaunchedEffect(Unit) {
         locationPermissionLauncher.launch(

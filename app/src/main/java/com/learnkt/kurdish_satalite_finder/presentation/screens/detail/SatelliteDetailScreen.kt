@@ -25,6 +25,7 @@ fun SatelliteDetailScreen(
     val satellite by viewModel.satellite.collectAsState()
     val calculations by viewModel.calculations.collectAsState()
     val locationError by viewModel.locationError.collectAsState()
+    val userLocation by viewModel.userLocation.collectAsState()
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -71,6 +72,46 @@ fun SatelliteDetailScreen(
                 )
                 Button(onClick = { viewModel.loadSatellite() }) {
                     Text("دووبارە هەوڵ بدەوە")
+                }
+            }
+
+            // Current Location Display
+            userLocation?.let { location ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = KurdishStrings.YOUR_LOCATION,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(KurdishStrings.LATITUDE, style = MaterialTheme.typography.bodySmall)
+                                Text(
+                                    text = String.format(Locale.US, "%.4f", location.latitude),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(KurdishStrings.LONGITUDE, style = MaterialTheme.typography.bodySmall)
+                                Text(
+                                    text = String.format(Locale.US, "%.4f", location.longitude),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
+                    }
                 }
             }
 

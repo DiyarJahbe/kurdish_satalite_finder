@@ -42,7 +42,7 @@ class CompassViewModel @Inject constructor(
         startLocationUpdates()
     }
 
-    private fun loadSatellite() {
+    fun loadSatellite() {
         viewModelScope.launch {
             repository.getAllSatellites().map { list ->
                 list.find { it.id == satelliteId }
@@ -53,7 +53,7 @@ class CompassViewModel @Inject constructor(
         }
     }
 
-    private fun startLocationUpdates() {
+    fun startLocationUpdates() {
         locationProvider.getLocationFlow()
             .onEach { location ->
                 _userLocation.value = location

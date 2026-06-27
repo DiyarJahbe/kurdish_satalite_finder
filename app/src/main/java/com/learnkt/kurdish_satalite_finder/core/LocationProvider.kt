@@ -23,6 +23,11 @@ class LocationProvider @Inject constructor(
     @SuppressLint("MissingPermission")
     suspend fun getCurrentLocation(): Location? {
         return try {
+            // Try last location first as it's fastest
+            val lastLoc = client.lastLocation.await()
+            if (lastLoc != null) return lastLoc
+
+            // If no last location, request a fresh one
             client.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 null
@@ -34,6 +39,11 @@ class LocationProvider @Inject constructor(
 
     @SuppressLint("MissingPermission")
     fun getLocationFlow(): Flow<Location> = callbackFlow {
+        // Send last location immediately if available
+        client.lastLocation.addOnSuccessListener { location ->
+            location?.let { trySend(it) }
+        }
+
         val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L)
             .setMinUpdateIntervalMillis(1000L)
             .build()

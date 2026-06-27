@@ -31,8 +31,12 @@ class SatelliteDetailViewModel @Inject constructor(
     private val _locationError = MutableStateFlow(false)
     val locationError = _locationError.asStateFlow()
 
+    private val _userLocation = MutableStateFlow<android.location.Location?>(null)
+    val userLocation = _userLocation.asStateFlow()
+
     init {
         loadSatellite()
+        startLocationUpdates()
     }
 
     fun loadSatellite() {
@@ -40,22 +44,39 @@ class SatelliteDetailViewModel @Inject constructor(
             val location = locationProvider.getCurrentLocation()
             if (location == null) {
                 _locationError.value = true
+                _userLocation.value = null
                 return@launch
             }
             _locationError.value = false
+            _userLocation.value = location
 
             repository.getAllSatellites().map { list ->
                 list.find { it.id == satelliteId }
             }.collect { sat ->
                 _satellite.value = sat
-                sat?.let {
-                    _calculations.value = CalculationEngine.calculate(
-                        location.latitude,
-                        location.longitude,
-                        it.longitude
-                    )
-                }
+                recalculate()
             }
         }
+    }
+
+    fun startLocationUpdates() {
+        locationProvider.getLocationFlow()
+            .onEach { location ->
+                _userLocation.value = location
+                _locationError.value = false
+                recalculate()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun recalculate() {
+        val sat = _satellite.value ?: return
+        val loc = _userLocation.value ?: return
+
+        _calculations.value = CalculationEngine.calculate(
+            loc.latitude,
+            loc.longitude,
+            sat.longitude
+        )
     }
 }
