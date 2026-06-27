@@ -77,6 +77,10 @@ dependencies {
     // Play Services
     implementation(libs.play.services.location)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+    
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:6.1.2")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

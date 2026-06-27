@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,6 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.*
 import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import java.util.Locale
 import kotlin.math.*
@@ -56,7 +61,7 @@ fun CompassScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF000827)) // Dark space blue
+            .background(Color(0xFF000827))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -129,21 +134,63 @@ fun CompassScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Compass View
-            Box(contentAlignment = Alignment.Center) {
-                CompassView(
+            // Map and Compass Circle
+            Box(
+                modifier = Modifier.size(300.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                // Live Map in the circle
+                userLocation?.let { location ->
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(userLatLng, 18f)
+                    }
+                    
+                    // Update camera position when location changes
+                    LaunchedEffect(location) {
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(userLatLng, 18f)
+                    }
+
+                    GoogleMap(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                            .clip(CircleShape),
+                        cameraPositionState = cameraPositionState,
+                        uiSettings = MapUiSettings(
+                            zoomControlsEnabled = false,
+                            myLocationButtonEnabled = false,
+                            compassEnabled = false,
+                            mapToolbarEnabled = false
+                        ),
+                        properties = MapProperties(
+                            mapType = MapType.SATELLITE,
+                            isMyLocationEnabled = true
+                        )
+                    )
+                }
+
+                // Overlay Compass
+                CompassOverlay(
                     currentAzimuth = currentAzimuth,
                     targetAzimuth = targetAzimuth,
-                    modifier = Modifier.size(280.dp)
+                    modifier = Modifier.fillMaxSize()
                 )
                 
-                // Current Heading inside compass
-                Text(
-                    text = String.format(Locale.US, "%.0f°", currentAzimuth),
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
-                    fontWeight = FontWeight.Bold
-                )
+                // Current Heading
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = 0.4f))
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = String.format(Locale.US, "%.0f°", currentAzimuth),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -192,7 +239,7 @@ fun CompassScreen(
 }
 
 @Composable
-fun CompassView(
+fun CompassOverlay(
     currentAzimuth: Float,
     targetAzimuth: Float,
     modifier: Modifier = Modifier
@@ -201,26 +248,18 @@ fun CompassView(
         val center = Offset(size.width / 2, size.height / 2)
         val radius = size.minDimension / 2
 
-        // Background Circle
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent)
-            ),
-            radius = radius
-        )
-
         // Outer Ring
         drawCircle(
-            color = Color.White.copy(alpha = 0.3f),
+            color = Color.White.copy(alpha = 0.8f),
             radius = radius,
-            style = Stroke(width = 2.dp.toPx())
+            style = Stroke(width = 3.dp.toPx())
         )
 
-        // Rotating Content (North, Target, etc)
+        // Degree Marks and Cardinal Points
         withTransform({
             rotate(-currentAzimuth, center)
         }) {
-            // Target Needle
+            // Target Needle (Red)
             val targetRad = Math.toRadians(targetAzimuth.toDouble() - 90.0)
             val targetX = center.x + (radius - 5.dp.toPx()) * cos(targetRad).toFloat()
             val targetY = center.y + (radius - 5.dp.toPx()) * sin(targetRad).toFloat()
@@ -229,22 +268,38 @@ fun CompassView(
                 color = Color.Red,
                 start = center,
                 end = Offset(targetX, targetY),
-                strokeWidth = 4.dp.toPx(),
+                strokeWidth = 5.dp.toPx(),
                 cap = StrokeCap.Round
             )
             
             // Cardinal Marks
-            drawCardinalMark("N", center, radius - 15.dp.toPx(), 0f)
-            drawCardinalMark("E", center, radius - 15.dp.toPx(), 90f)
-            drawCardinalMark("S", center, radius - 15.dp.toPx(), 180f)
-            drawCardinalMark("W", center, radius - 15.dp.toPx(), 270f)
+            drawCardinalMark("N", center, radius - 20.dp.toPx(), 0f)
+            drawCardinalMark("E", center, radius - 20.dp.toPx(), 90f)
+            drawCardinalMark("S", center, radius - 20.dp.toPx(), 180f)
+            drawCardinalMark("W", center, radius - 20.dp.toPx(), 270f)
+            
+            // Tick marks every 10 degrees
+            for (angle in 0 until 360 step 10) {
+                val angleRad = Math.toRadians(angle.toDouble() - 90.0)
+                val startX = center.x + (radius - 15.dp.toPx()) * cos(angleRad).toFloat()
+                val startY = center.y + (radius - 15.dp.toPx()) * sin(angleRad).toFloat()
+                val endX = center.x + radius * cos(angleRad).toFloat()
+                val endY = center.y + radius * sin(angleRad).toFloat()
+                
+                drawLine(
+                    color = Color.White.copy(alpha = 0.5f),
+                    start = Offset(startX, startY),
+                    end = Offset(endX, endY),
+                    strokeWidth = 1.dp.toPx()
+                )
+            }
         }
 
-        // Fixed Top Arrow (Pointer)
+        // Fixed Top Pointer
         val arrowPath = Path().apply {
-            moveTo(center.x, center.y - radius - 10.dp.toPx())
-            lineTo(center.x - 12.dp.toPx(), center.y - radius + 10.dp.toPx())
-            lineTo(center.x + 12.dp.toPx(), center.y - radius + 10.dp.toPx())
+            moveTo(center.x, center.y - radius - 15.dp.toPx())
+            lineTo(center.x - 15.dp.toPx(), center.y - radius + 10.dp.toPx())
+            lineTo(center.x + 15.dp.toPx(), center.y - radius + 10.dp.toPx())
             close()
         }
         drawPath(arrowPath, color = Color.White)
@@ -255,5 +310,5 @@ fun DrawScope.drawCardinalMark(label: String, center: Offset, radius: Float, ang
     val rad = Math.toRadians(angle.toDouble() - 90.0)
     val x = center.x + radius * cos(rad).toFloat()
     val y = center.y + radius * sin(rad).toFloat()
-    drawCircle(Color.White, radius = 4.dp.toPx(), center = Offset(x, y))
+    drawCircle(Color.White, radius = 5.dp.toPx(), center = Offset(x, y))
 }

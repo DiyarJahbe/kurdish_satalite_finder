@@ -18,6 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Kurdish_satalite_finder">
+
+        <!-- GOOGLE MAPS API KEY -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyACs3cCXPC6-ZPQrw1kH945Hl-t7ua_K8w" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
