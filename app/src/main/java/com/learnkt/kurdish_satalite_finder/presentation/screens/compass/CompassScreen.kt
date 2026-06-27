@@ -1,5 +1,8 @@
 package com.learnkt.kurdish_satalite_finder.presentation.screens.compass
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -25,6 +28,23 @@ fun CompassScreen(
     val satellite by viewModel.satellite.collectAsState()
     val currentAzimuth by viewModel.currentAzimuth.collectAsState()
     val targetAzimuth by viewModel.targetAzimuth.collectAsState()
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.values.any { it }) {
+            viewModel.loadSatellite()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        locationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
 
     val diff = (targetAzimuth - currentAzimuth + 540) % 360 - 180
     val isAligned = abs(diff) < 2
@@ -135,7 +155,5 @@ fun DrawScope.drawTextCardinal(text: String, center: Offset, radius: Float, angl
     val x = center.x + radius * cos(rad).toFloat()
     val y = center.y + radius * sin(rad).toFloat()
     
-    // Using a circle for cardinal indicator since standard DrawScope doesn't support drawText easily
-    // For 100% Kurdish, the user can see the text labels we might add later with native canvas
     drawCircle(Color.Gray, radius = 6.dp.toPx(), center = Offset(x, y))
 }

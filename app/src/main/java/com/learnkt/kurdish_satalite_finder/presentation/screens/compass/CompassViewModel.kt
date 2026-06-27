@@ -4,17 +4,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learnkt.kurdish_satalite_finder.core.CompassSensorManager
+import com.learnkt.kurdish_satalite_finder.core.LocationProvider
 import com.learnkt.kurdish_satalite_finder.domain.engine.CalculationEngine
 import com.learnkt.kurdish_satalite_finder.domain.model.Satellite
 import com.learnkt.kurdish_satalite_finder.domain.repository.SatelliteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CompassViewModel @Inject constructor(
     private val repository: SatelliteRepository,
     private val sensorManager: CompassSensorManager,
+    private val locationProvider: LocationProvider,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -29,23 +32,28 @@ class CompassViewModel @Inject constructor(
     val currentAzimuth = sensorManager.getRotationFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
 
-    // Default location (e.g., Erbil, Kurdistan)
-    private val userLat = 36.1911
-    private val userLon = 44.0092
-
     init {
         loadSatellite()
     }
 
-    private fun loadSatellite() {
-        repository.getAllSatellites().map { list ->
-            list.find { it.id == satelliteId }
-        }.onEach { sat ->
-            _satellite.value = sat
-            sat?.let {
-                val calc = CalculationEngine.calculate(userLat, userLon, it.longitude)
-                _targetAzimuth.value = calc.azimuth.toFloat()
+    fun loadSatellite() {
+        viewModelScope.launch {
+            val location = locationProvider.getCurrentLocation()
+            if (location == null) return@launch
+
+            repository.getAllSatellites().map { list ->
+                list.find { it.id == satelliteId }
+            }.collect { sat ->
+                _satellite.value = sat
+                sat?.let {
+                    val calc = CalculationEngine.calculate(
+                        location.latitude,
+                        location.longitude,
+                        it.longitude
+                    )
+                    _targetAzimuth.value = calc.azimuth.toFloat()
+                }
             }
-        }.launchIn(viewModelScope)
+        }
     }
 }

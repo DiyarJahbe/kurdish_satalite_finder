@@ -1,5 +1,8 @@
 package com.learnkt.kurdish_satalite_finder.presentation.screens.detail
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,6 +24,24 @@ fun SatelliteDetailScreen(
 ) {
     val satellite by viewModel.satellite.collectAsState()
     val calculations by viewModel.calculations.collectAsState()
+    val locationError by viewModel.locationError.collectAsState()
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.values.any { it }) {
+            viewModel.loadSatellite()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        locationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -40,8 +61,19 @@ fun SatelliteDetailScreen(
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.Start // Respects RTL
+            horizontalAlignment = Alignment.Start
         ) {
+            if (locationError) {
+                Text(
+                    text = "تکایە دەستگەیشتن بە شوێن (Location) چالاک بکە بۆ ئەوەی گۆشەکان بە دروستی حیساب بکرێن.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Button(onClick = { viewModel.loadSatellite() }) {
+                    Text("دووبارە هەوڵ بدەوە")
+                }
+            }
+
             calculations?.let { calc ->
                 CalculationCard(
                     title = KurdishStrings.AZIMUTH,
@@ -82,7 +114,7 @@ fun CalculationCard(title: String, value: String) {
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.Start // Respects RTL
+            horizontalAlignment = Alignment.Start
         ) {
             Text(text = title, style = MaterialTheme.typography.labelLarge)
             Text(text = value, style = MaterialTheme.typography.headlineMedium)

@@ -76,6 +76,7 @@ dependencies {
 
     // Play Services
     implementation(libs.play.services.location)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
