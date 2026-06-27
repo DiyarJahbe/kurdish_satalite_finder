@@ -3,40 +3,56 @@ package com.learnkt.kurdish_satalite_finder.domain.engine
 import com.learnkt.kurdish_satalite_finder.domain.model.SatelliteCalculation
 import kotlin.math.*
 
+/**
+ * Advanced Satellite Calculation Engine.
+ * Uses standard geostationary orbit formulas for Azimuth, Elevation, and Skew.
+ */
 object CalculationEngine {
-
-    private const val EARTH_RADIUS = 6378.137
-    private const val SATELLITE_ALTITUDE = 35786.0
-    private const val RATIO = EARTH_RADIUS / (EARTH_RADIUS + SATELLITE_ALTITUDE)
 
     fun calculate(
         userLat: Double,
         userLon: Double,
         satLon: Double
     ): SatelliteCalculation {
-        val latRad = Math.toRadians(userLat)
-        val lonRad = Math.toRadians(userLon)
-        val satLonRad = Math.toRadians(satLon)
-        
-        val diffLon = satLonRad - lonRad
+        // Convert to radians
+        val latR = Math.toRadians(userLat)
+        val lonR = Math.toRadians(userLon)
+        val satLonR = Math.toRadians(satLon)
 
-        // Azimuth
-        val azimuth = 180 + Math.toDegrees(atan2(sin(diffLon), tan(latRad)))
-        
-        // Elevation
-        val cosDiffLon = cos(diffLon)
-        val cosLat = cos(latRad)
-        val elevation = Math.toDegrees(
-            atan((cosDiffLon * cosLat - RATIO) / sqrt(1 - (cosDiffLon * cosLat).pow(2)))
-        )
+        // Difference in longitude
+        val dLon = satLonR - lonR
 
-        // LNB Skew
-        val skew = Math.toDegrees(atan(sin(diffLon) / tan(latRad)))
+        // 1. Azimuth Calculation
+        // Formula: Azimuth = 180 + atan(tan(dLon) / sin(lat))
+        // We use atan2 for correct quadrant handling
+        val azimuthRad = atan2(sin(dLon), tan(latR))
+        var azimuthDeg = Math.toDegrees(azimuthRad) + 180.0
+        
+        // Normalize to [0, 360)
+        azimuthDeg = (azimuthDeg + 360.0) % 360.0
+
+        // 2. Elevation Calculation
+        // Formula: Elevation = atan((cos(G) * cos(L) - 0.1512) / sqrt(1 - (cos(G)*cos(L))^2))
+        // where G is dLon and L is Lat
+        val r = 6371.0 // Earth radius
+        val h = 35786.0 // Sat altitude
+        val k = (r + h) / r // approx 6.61
+        
+        val cosG = cos(dLon)
+        val cosL = cos(latR)
+        
+        val elevationRad = atan((cosG * cosL - (1 / k)) / sqrt(1 - (cosG * cosL).pow(2)))
+        val elevationDeg = Math.toDegrees(elevationRad)
+
+        // 3. LNB Skew Calculation
+        // Formula: Skew = atan(sin(dLon) / tan(lat))
+        val skewRad = atan(sin(dLon) / tan(latR))
+        val skewDeg = Math.toDegrees(skewRad)
 
         return SatelliteCalculation(
-            azimuth = (azimuth + 360) % 360,
-            elevation = elevation,
-            lnbSkew = skew
+            azimuth = azimuthDeg,
+            elevation = elevationDeg,
+            lnbSkew = skewDeg
         )
     }
 }

@@ -42,6 +42,16 @@ object KurdishStrings {
     const val SOUTH = "باشوور"
     const val WEST = "ڕۆژئاوا"
     
+    // Detailed Strings
+    const val YOUR_LOCATION = "شوێنەکەی تۆ"
+    const val LATITUDE = "پانی (Lat)"
+    const val LONGITUDE = "درێژی (Lon)"
+    const val SELECT_SATELLITE = "مانگی دەستکرد هەڵبژێرە"
+    const val TURN_ANTENNA = "دێشەکە بسوڕێنە"
+    const val TO_RIGHT = "بۆ لای ڕاست"
+    const val TO_LEFT = "بۆ لای چەپ"
+    const val BY_DEGREES = "بە بڕی"
+    
     // Onboarding
     const val ONBOARDING_TITLE_1 = "دۆزینەوەی مانگی دەستکرد"
     const val ONBOARDING_DESC_1 = "مانگە دەستکردەکان بپشکنە کە بە دەوری زەویدا دەسوڕێنەوە. زانیاری ورد لەسەر هەریەکێکیان بدۆزەرەوە."

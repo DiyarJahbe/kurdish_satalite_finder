@@ -38,8 +38,8 @@ class SatelliteRepositoryImpl @Inject constructor(
 
     override suspend fun seedDatabase() {
         val initialSatellites = listOf(
-            SatelliteEntity(name = "Türksat 42E", longitude = 42.0),
             SatelliteEntity(name = "Nilesat 7W", longitude = -7.0),
+            SatelliteEntity(name = "Türksat 42E", longitude = 42.0),
             SatelliteEntity(name = "Hotbird 13E", longitude = 13.0),
             SatelliteEntity(name = "Astra 19E", longitude = 19.2),
             SatelliteEntity(name = "Eutelsat 7E", longitude = 7.0),
