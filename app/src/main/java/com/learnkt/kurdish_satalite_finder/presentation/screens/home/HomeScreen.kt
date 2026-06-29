@@ -1,6 +1,5 @@
 package com.learnkt.kurdish_satalite_finder.presentation.screens.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,12 +18,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.learnkt.kurdish_satalite_finder.R
 import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import com.learnkt.kurdish_satalite_finder.domain.model.Satellite
 import com.learnkt.kurdish_satalite_finder.domain.usecase.GetSatellitesUseCase
@@ -150,10 +147,11 @@ fun HomeTabContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
+        Icon(
+            imageVector = Icons.Default.Satellite,
             contentDescription = null,
-            modifier = Modifier.size(120.dp)
+            modifier = Modifier.size(120.dp),
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(

@@ -19,9 +19,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Kurdish_satalite_finderTheme {
+            Kurdish_satalite_finderTheme(dynamicColor = false) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    Surface {
+                    Surface(color = androidx.compose.ui.graphics.Color.White) {
                         val navController = rememberNavController()
                         NavGraph(navController = navController)
                     }

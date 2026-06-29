@@ -5,10 +5,10 @@ package com.learnkt.kurdish_satalite_finder.core.localization
  * You can easily change any text here.
  */
 object KurdishStrings {
-    const val APP_NAME = "دۆزەرەوەی مانگی دەستکرد"
+    const val APP_NAME = "Kurdish SatFinder"
     
     // Splash Screen
-    const val SPLASH_WELCOME = "بەخێربێن بۆ دۆزەرەوەی مانگی دەستکرد"
+    const val SPLASH_WELCOME = "بەخێربێن بۆ یەکەمین دۆزەرەوەی مانگی دەستکردی کوردی  "
     
     // Home Screen
     const val HOME_TITLE = "سەرەکی"

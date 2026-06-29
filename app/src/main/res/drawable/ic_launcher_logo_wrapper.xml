@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+      Adaptive icons are 108dp x 108dp.
+      The "Safe Zone" is the center 66dp circle.
+      We center the logo and size it to 54dp (half of 108dp) to ensure
+      it fits perfectly within the safe zone with 6dp margin on all sides.
+      This guarantees no clipping on any device launcher.
+    -->
     <item
+        android:width="54dp"
+        android:height="54dp"
         android:drawable="@drawable/logo"
-        android:gravity="center"
-        android:width="72dp"
-        android:height="72dp" />
+        android:gravity="center" />
 </layer-list>
