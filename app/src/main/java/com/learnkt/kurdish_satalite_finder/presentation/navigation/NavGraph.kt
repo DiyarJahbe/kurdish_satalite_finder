@@ -60,16 +60,6 @@ fun NavGraph(
                     navController = navController
                 )
             }
-            composable(Screen.SatellitesTab.route) {
-                HomeScreen(
-                    navController = navController
-                )
-            }
-            composable(Screen.FavoritesTab.route) {
-                HomeScreen(
-                    navController = navController
-                )
-            }
             composable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("satelliteId") { type = NavType.IntType })

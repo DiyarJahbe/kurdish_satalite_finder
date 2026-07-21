@@ -17,22 +17,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 import com.learnkt.kurdish_satalite_finder.domain.model.Satellite
-import com.learnkt.kurdish_satalite_finder.domain.usecase.GetSatellitesUseCase
-import com.learnkt.kurdish_satalite_finder.domain.usecase.SearchSatellitesUseCase
-import com.learnkt.kurdish_satalite_finder.domain.repository.SatelliteRepository
 import com.learnkt.kurdish_satalite_finder.presentation.navigation.Screen
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,8 +30,7 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    var selectedTab by remember { mutableStateOf("home") }
     var searchQuery by remember { mutableStateOf("") }
     
     val satellites by viewModel.satellites.collectAsState()
@@ -52,10 +41,10 @@ fun HomeScreen(
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
-                        when (currentRoute) {
-                            Screen.HomeTab.route -> KurdishStrings.APP_NAME
-                            Screen.SatellitesTab.route -> KurdishStrings.HOME_SATELLITES
-                            Screen.FavoritesTab.route -> KurdishStrings.HOME_FAVORITES
+                        when (selectedTab) {
+                            "home" -> KurdishStrings.APP_NAME
+                            "satellites" -> KurdishStrings.HOME_SATELLITES
+                            "favorites" -> KurdishStrings.HOME_FAVORITES
                             else -> KurdishStrings.APP_NAME
                         }
                     )
@@ -65,45 +54,33 @@ fun HomeScreen(
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = currentRoute == Screen.HomeTab.route,
-                    onClick = {
-                        navController.navigate(Screen.HomeTab.route) {
-                            popUpTo(Screen.HomeTab.route) { inclusive = true }
-                        }
-                    },
+                    selected = selectedTab == "home",
+                    onClick = { selectedTab = "home" },
                     icon = {
                         Icon(
-                            if (currentRoute == Screen.HomeTab.route) Icons.Filled.Home else Icons.Outlined.Home,
+                            if (selectedTab == "home") Icons.Filled.Home else Icons.Outlined.Home,
                             contentDescription = null
                         )
                     },
                     label = { Text(KurdishStrings.HOME_TITLE) }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == Screen.SatellitesTab.route,
-                    onClick = {
-                        navController.navigate(Screen.SatellitesTab.route) {
-                            popUpTo(Screen.HomeTab.route)
-                        }
-                    },
+                    selected = selectedTab == "satellites",
+                    onClick = { selectedTab = "satellites" },
                     icon = {
                         Icon(
-                            if (currentRoute == Screen.SatellitesTab.route) Icons.Filled.Satellite else Icons.Outlined.Satellite,
+                            if (selectedTab == "satellites") Icons.Filled.Satellite else Icons.Outlined.Satellite,
                             contentDescription = null
                         )
                     },
                     label = { Text(KurdishStrings.HOME_SATELLITES) }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == Screen.FavoritesTab.route,
-                    onClick = {
-                        navController.navigate(Screen.FavoritesTab.route) {
-                            popUpTo(Screen.HomeTab.route)
-                        }
-                    },
+                    selected = selectedTab == "favorites",
+                    onClick = { selectedTab = "favorites" },
                     icon = {
                         Icon(
-                            if (currentRoute == Screen.FavoritesTab.route) Icons.Filled.Favorite else Icons.Outlined.Favorite,
+                            if (selectedTab == "favorites") Icons.Filled.Favorite else Icons.Outlined.Favorite,
                             contentDescription = null
                         )
                     },
@@ -112,12 +89,12 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        when (currentRoute) {
-            Screen.HomeTab.route -> HomeTabContent(
+        when (selectedTab) {
+            "home" -> HomeTabContent(
                 modifier = Modifier.padding(padding),
-                navController = navController
+                onNavigateToSatellites = { selectedTab = "satellites" }
             )
-            Screen.SatellitesTab.route -> SatellitesTabContent(
+            "satellites" -> SatellitesTabContent(
                 modifier = Modifier.padding(padding),
                 navController = navController,
                 satellites = satellites,
@@ -125,7 +102,7 @@ fun HomeScreen(
                 onSearchQueryChange = { searchQuery = it },
                 onToggleFavorite = { viewModel.toggleFavorite(it) }
             )
-            Screen.FavoritesTab.route -> FavoritesTabContent(
+            "favorites" -> FavoritesTabContent(
                 modifier = Modifier.padding(padding),
                 navController = navController,
                 favoriteSatellites = favoriteSatellites,
@@ -138,7 +115,7 @@ fun HomeScreen(
 @Composable
 fun HomeTabContent(
     modifier: Modifier = Modifier,
-    navController: NavController
+    onNavigateToSatellites: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -166,7 +143,7 @@ fun HomeTabContent(
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = { navController.navigate(Screen.SatellitesTab.route) },
+            onClick = onNavigateToSatellites,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("دەست پێ بکە")
