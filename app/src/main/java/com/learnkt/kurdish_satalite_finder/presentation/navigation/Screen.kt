@@ -6,10 +6,14 @@ sealed class Screen(val route: String) {
     object HomeTab : Screen("home_tab")
     object SatellitesTab : Screen("satellites_tab")
     object FavoritesTab : Screen("favorites_tab")
+    object Map : Screen("map")
     object Detail : Screen("detail/{satelliteId}") {
         fun createRoute(satelliteId: Int) = "detail/$satelliteId"
     }
     object Compass : Screen("compass/{satelliteId}") {
         fun createRoute(satelliteId: Int) = "compass/$satelliteId"
+    }
+    object AR : Screen("ar/{satelliteId}") {
+        fun createRoute(satelliteId: Int) = "ar/$satelliteId"
     }
 }

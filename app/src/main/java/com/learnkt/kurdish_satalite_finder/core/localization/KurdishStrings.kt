@@ -16,6 +16,7 @@ object KurdishStrings {
     const val HOME_FAVORITES = "دڵخوازەکان"
     const val HOME_COMPASS = "کۆمپاس"
     const val HOME_AR_MODE = "بینینی ڕاستەوخۆ (AR)"
+    const val SEARCH_LOCATION = "بگەڕێ بۆ شوێنێک..."
     
     // Satellite List
     const val SEARCH_SATELLITE = "بگەڕێ بۆ مانگی دەستکرد..."

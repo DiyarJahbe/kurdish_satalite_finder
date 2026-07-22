@@ -23,7 +23,7 @@ object AppModule {
             context,
             SatelliteDatabase::class.java,
             SatelliteDatabase.DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

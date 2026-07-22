@@ -12,7 +12,7 @@ interface SatelliteDao {
     @Query("SELECT * FROM satellites WHERE isFavorite = 1")
     fun getFavoriteSatellites(): Flow<List<SatelliteEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSatellites(satellites: List<SatelliteEntity>)
 
     @Update
@@ -20,4 +20,7 @@ interface SatelliteDao {
 
     @Query("SELECT * FROM satellites WHERE name LIKE '%' || :query || '%'")
     fun searchSatellites(query: String): Flow<List<SatelliteEntity>>
+
+    @Query("SELECT * FROM satellites WHERE id = :id LIMIT 1")
+    suspend fun getSatelliteById(id: Int): SatelliteEntity?
 }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.learnkt.kurdish_satalite_finder.data.local.dao.SatelliteDao
 import com.learnkt.kurdish_satalite_finder.data.local.entity.SatelliteEntity
 
-@Database(entities = [SatelliteEntity::class], version = 1, exportSchema = false)
+@Database(entities = [SatelliteEntity::class], version = 2, exportSchema = false)
 abstract class SatelliteDatabase : RoomDatabase() {
     abstract val satelliteDao: SatelliteDao
 

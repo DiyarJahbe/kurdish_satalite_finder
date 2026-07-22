@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.learnkt.kurdish_satalite_finder.presentation.screens.ar.ARScreen
 import com.learnkt.kurdish_satalite_finder.presentation.screens.compass.CompassScreen
 import com.learnkt.kurdish_satalite_finder.presentation.screens.detail.SatelliteDetailScreen
 import com.learnkt.kurdish_satalite_finder.presentation.screens.home.HomeScreen
+import com.learnkt.kurdish_satalite_finder.presentation.screens.map.MapScreen
 import com.learnkt.kurdish_satalite_finder.presentation.screens.onboarding.OnboardingScreen
 import com.learnkt.kurdish_satalite_finder.presentation.screens.splash.SplashScreen
 import com.learnkt.kurdish_satalite_finder.presentation.viewmodel.OnboardingViewModel
@@ -60,6 +62,11 @@ fun NavGraph(
                     navController = navController
                 )
             }
+            composable(Screen.Map.route) {
+                MapScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("satelliteId") { type = NavType.IntType })
@@ -68,6 +75,9 @@ fun NavGraph(
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToCompass = { id ->
                         navController.navigate(Screen.Compass.createRoute(id))
+                    },
+                    onNavigateToAR = { id ->
+                        navController.navigate(Screen.AR.createRoute(id))
                     }
                 )
             }
@@ -76,6 +86,16 @@ fun NavGraph(
                 arguments = listOf(navArgument("satelliteId") { type = NavType.IntType })
             ) {
                 CompassScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                route = Screen.AR.route,
+                arguments = listOf(navArgument("satelliteId") { type = NavType.IntType })
+            ) {
+                val satelliteId = it.arguments?.getInt("satelliteId") ?: 0
+                ARScreen(
+                    satelliteId = satelliteId,
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

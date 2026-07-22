@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface SatelliteRepository {
     fun getAllSatellites(): Flow<List<Satellite>>
     fun getFavoriteSatellites(): Flow<List<Satellite>>
+    suspend fun getSatelliteById(id: Int): Satellite?
     suspend fun toggleFavorite(satellite: Satellite)
     fun searchSatellites(query: String): Flow<List<Satellite>>
     suspend fun seedDatabase()

@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +21,7 @@ import java.util.Locale
 fun SatelliteDetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToCompass: (Int) -> Unit,
+    onNavigateToAR: (Int) -> Unit,
     viewModel: SatelliteDetailViewModel = hiltViewModel()
 ) {
     val satellite by viewModel.satellite.collectAsState()
@@ -140,6 +142,21 @@ fun SatelliteDetailScreen(
                 Icon(Icons.Default.LocationOn, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(KurdishStrings.HOME_COMPASS)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = { satellite?.let { onNavigateToAR(it.id) } },
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Icon(Icons.Default.CameraAlt, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("AR View")
             }
         }
     }
