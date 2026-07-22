@@ -3,7 +3,9 @@ package com.learnkt.kurdish_satalite_finder.presentation.screens.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.learnkt.kurdish_satalite_finder.domain.usecase.LocationSettingsUseCase
+import android.content.Context
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +19,8 @@ data class LocationSettingsUiState(
 
 @HiltViewModel
 class LocationSettingsViewModel @Inject constructor(
-    private val locationSettingsUseCase: LocationSettingsUseCase
+    private val locationSettingsUseCase: LocationSettingsUseCase,
+    @ApplicationContext private val context: android.content.Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LocationSettingsUiState())
@@ -53,6 +56,28 @@ class LocationSettingsViewModel @Inject constructor(
 
     fun updateManualLongitude(lon: String) {
         _uiState.update { it.copy(manualLongitude = lon, selectedCity = null) }
+    }
+
+    fun searchLocation(query: String) {
+        if (query.isBlank()) return
+        viewModelScope.launch {
+            try {
+                val geocoder = android.location.Geocoder(context)
+                val addresses = geocoder.getFromLocationName(query, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    _uiState.update {
+                        it.copy(
+                            manualLatitude = address.latitude.toString(),
+                            manualLongitude = address.longitude.toString(),
+                            selectedCity = address.locality ?: address.featureName
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun onMapClick(latLng: com.google.android.gms.maps.model.LatLng) {

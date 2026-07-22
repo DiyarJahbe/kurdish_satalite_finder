@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,13 +45,18 @@ fun LocationSettingsScreen(
             )
         }
     ) { padding ->
+        var searchQuery by remember { mutableStateOf("") }
+        var isSearchActive by remember { mutableStateOf(false) }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            item { Spacer(modifier = Modifier.height(8.dp)) }
+
             // GPS Auto-detect Toggle
             item {
                 LocationModeCard(
@@ -71,6 +77,31 @@ fun LocationSettingsScreen(
             }
 
             if (!uiState.useAutoGps) {
+                item {
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChange = { searchQuery = it },
+                        onSearch = { 
+                            viewModel.searchLocation(it)
+                            isSearchActive = false
+                        },
+                        active = isSearchActive,
+                        onActiveChange = { isSearchActive = it },
+                        placeholder = { Text(KurdishStrings.SEARCH_LOCATION) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        trailingIcon = {
+                            if (searchQuery.isNotEmpty()) {
+                                IconButton(onClick = { searchQuery = "" }) {
+                                    Icon(Icons.Default.Close, contentDescription = null)
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        // Suggestions could go here
+                    }
+                }
+
                 item {
                     val manualLat = uiState.manualLatitude.toDoubleOrNull() ?: 0.0
                     val manualLon = uiState.manualLongitude.toDoubleOrNull() ?: 0.0
