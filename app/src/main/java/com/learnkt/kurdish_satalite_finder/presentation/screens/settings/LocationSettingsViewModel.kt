@@ -21,33 +21,48 @@ class LocationSettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LocationSettingsUiState())
-    val uiState: StateFlow<LocationSettingsUiState> = combine(
-        locationSettingsUseCase.useAutoGps,
-        locationSettingsUseCase.manualLatitude,
-        locationSettingsUseCase.manualLongitude,
-        locationSettingsUseCase.selectedCity,
-        _uiState
-    ) { useGps, lat, lon, city, state ->
-        state.copy(
-            useAutoGps = useGps,
-            manualLatitude = if (state.useAutoGps) lat.toString() else state.manualLatitude,
-            manualLongitude = if (state.useAutoGps) lon.toString() else state.manualLongitude,
-            selectedCity = city
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LocationSettingsUiState())
+    val uiState: StateFlow<LocationSettingsUiState> = _uiState.asStateFlow()
 
-    fun setUseAutoGps(enabled: Boolean) {
+    init {
+        loadInitialSettings()
+    }
+
+    private fun loadInitialSettings() {
         viewModelScope.launch {
-            locationSettingsUseCase.updateSettings(useAutoGps = enabled)
+            val useGps = locationSettingsUseCase.useAutoGps.first()
+            val lat = locationSettingsUseCase.manualLatitude.first()
+            val lon = locationSettingsUseCase.manualLongitude.first()
+            val city = locationSettingsUseCase.selectedCity.first()
+            
+            _uiState.value = LocationSettingsUiState(
+                useAutoGps = useGps,
+                manualLatitude = lat.toString(),
+                manualLongitude = lon.toString(),
+                selectedCity = city
+            )
         }
     }
 
+    fun setUseAutoGps(enabled: Boolean) {
+        _uiState.update { it.copy(useAutoGps = enabled) }
+    }
+
     fun updateManualLatitude(lat: String) {
-        _uiState.update { it.copy(manualLatitude = lat) }
+        _uiState.update { it.copy(manualLatitude = lat, selectedCity = null) }
     }
 
     fun updateManualLongitude(lon: String) {
-        _uiState.update { it.copy(manualLongitude = lon) }
+        _uiState.update { it.copy(manualLongitude = lon, selectedCity = null) }
+    }
+
+    fun onMapClick(latLng: com.google.android.gms.maps.model.LatLng) {
+        _uiState.update { 
+            it.copy(
+                manualLatitude = latLng.latitude.toString(),
+                manualLongitude = latLng.longitude.toString(),
+                selectedCity = null
+            )
+        }
     }
 
     fun selectCity(city: KurdishCities.City) {

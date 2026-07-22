@@ -12,11 +12,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.learnkt.kurdish_satalite_finder.core.localization.KurdishStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,6 +71,50 @@ fun LocationSettingsScreen(
             }
 
             if (!uiState.useAutoGps) {
+                item {
+                    val manualLat = uiState.manualLatitude.toDoubleOrNull() ?: 0.0
+                    val manualLon = uiState.manualLongitude.toDoubleOrNull() ?: 0.0
+                    val manualLatLng = LatLng(manualLat, manualLon)
+                    
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(manualLatLng, 10f)
+                    }
+                    
+                    // Sync camera if manual LatLng changes externally (e.g. city pick)
+                    LaunchedEffect(manualLatLng) {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngZoom(manualLatLng, 10f)
+                        )
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(2.dp)
+                    ) {
+                        GoogleMap(
+                            modifier = Modifier.fillMaxSize(),
+                            cameraPositionState = cameraPositionState,
+                            onMapClick = { viewModel.onMapClick(it) },
+                            uiSettings = MapUiSettings(
+                                zoomControlsEnabled = false,
+                                myLocationButtonEnabled = false
+                            )
+                        ) {
+                            val markerState = rememberMarkerState(position = manualLatLng)
+                            LaunchedEffect(manualLatLng) {
+                                markerState.position = manualLatLng
+                            }
+                            Marker(
+                                state = markerState,
+                                title = "Selected Location"
+                            )
+                        }
+                    }
+                }
+
                 item {
                     ManualCoordinatesInput(
                         latitude = uiState.manualLatitude,
@@ -159,23 +208,23 @@ fun ManualCoordinatesInput(
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            OutlinedTextField(
-                value = latitude,
-                onValueChange = onLatChange,
-                label = { Text(KurdishStrings.LATITUDE) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = longitude,
-                onValueChange = onLonChange,
-                label = { Text(KurdishStrings.LONGITUDE) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
+                OutlinedTextField(
+                    value = latitude,
+                    onValueChange = onLatChange,
+                    label = { Text(KurdishStrings.LATITUDE) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = longitude,
+                    onValueChange = onLonChange,
+                    label = { Text(KurdishStrings.LONGITUDE) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true
+                )
         }
     }
 }
