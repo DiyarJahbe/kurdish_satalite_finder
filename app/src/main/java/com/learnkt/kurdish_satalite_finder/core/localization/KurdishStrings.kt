@@ -63,4 +63,27 @@ object KurdishStrings {
     const val SKIP = "پەڕاندن"
     const val NEXT = "دواتر"
     const val GET_STARTED = "دەستپێبکە"
+    
+    // Tools & Helpers
+    const val TOOLS_TITLE = "ئامرازەکان"
+    const val RECEIVER_HELPER = "ڕێبەری ڕیسیڤەر"
+    const val SIGNAL_HELPER = "ڕێبەری سیگناڵ"
+    const val LOCATION_SETTINGS = "ڕێکخستنی شوێن"
+    
+    // Manual Location
+    const val USE_GPS = "دیاریکردنی ئۆتۆماتیکی (GPS)"
+    const val MANUAL_COORDINATES = "دیاریکردنی دەستی"
+    const val SELECT_CITY = "شارێک هەڵبژێرە"
+    const val SAVE_LOCATION = "پاشەکەوتکردنی شوێن"
+    
+    // Receiver Helper content
+    const val LNB_GUIDE_TITLE = "ڕێکخستنی LNB"
+    const val LNB_GUIDE_DESC = "دڵنیابەوە کە سەرەکە (LNB) بە گۆشەیەکی دروست بەستراوە بۆ ئەوەی زۆرترین سیگناڵ وەربگریت."
+    const val SCAN_SETTINGS_TITLE = "ڕێکخستنی گەڕان"
+    const val SCAN_SETTINGS_DESC = "گەڕانی کوێر (Blind Scan) بەکاربهێنە بۆ دۆزینەوەی هەموو کەناڵە نوێیەکان."
+    
+    // Signal Helper content
+    const val STRENGTH_VS_QUALITY = "هێز بەرامبەر کوالێتی"
+    const val SIGNAL_TEACHING = "هێز (Strength) نیشانەی بەستنی وایەرەکەیە، بەڵام کوالێتی (Quality) نیشانەی ڕێکی دێشەکەیە."
+    const val ALIGNMENT_TIPS = "هەمیشە بە هێواشی دێشەکە بجوڵێنە و چاوەڕێ بکە تا ڕیسیڤەرەکە سیگناڵەکە دەخوێنێتەوە."
 }

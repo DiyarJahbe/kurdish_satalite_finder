@@ -37,4 +37,10 @@ object AppModule {
     fun provideOnboardingPreferences(@ApplicationContext context: Context): OnboardingPreferences {
         return OnboardingPreferences(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideLocationPreferences(@ApplicationContext context: Context): com.learnkt.kurdish_satalite_finder.data.preferences.LocationPreferences {
+        return com.learnkt.kurdish_satalite_finder.data.preferences.LocationPreferences(context)
+    }
 }

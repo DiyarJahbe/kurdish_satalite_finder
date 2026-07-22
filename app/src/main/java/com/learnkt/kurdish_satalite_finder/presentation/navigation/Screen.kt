@@ -16,4 +16,8 @@ sealed class Screen(val route: String) {
     object AR : Screen("ar/{satelliteId}") {
         fun createRoute(satelliteId: Int) = "ar/$satelliteId"
     }
+    object ToolsTab : Screen("tools_tab")
+    object LocationSettings : Screen("location_settings")
+    object ReceiverHelper : Screen("receiver_helper")
+    object SignalHelper : Screen("signal_helper")
 }

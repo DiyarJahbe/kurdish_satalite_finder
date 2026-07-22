@@ -9,17 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Satellite
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Satellite
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.filled.*
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -99,6 +91,17 @@ fun HomeScreen(
                     },
                     label = { Text(KurdishStrings.HOME_FAVORITES) }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == "tools",
+                    onClick = { selectedTab = "tools" },
+                    icon = {
+                        Icon(
+                            if (selectedTab == "tools") Icons.Filled.Build else Icons.Outlined.Build,
+                            contentDescription = null
+                        )
+                    },
+                    label = { Text(KurdishStrings.TOOLS_TITLE) }
+                )
             }
         }
     ) { padding ->
@@ -107,6 +110,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(padding),
                 userLocation = userLocation,
                 onRefreshLocation = { viewModel.refreshLocation() },
+                onNavigateToSettings = { navController.navigate(Screen.LocationSettings.route) },
                 totalSatellites = satellites.size,
                 favoriteCount = favoriteSatellites.size,
                 onNavigateToSatellites = { selectedTab = "satellites" },
@@ -127,7 +131,47 @@ fun HomeScreen(
                 favoriteSatellites = favoriteSatellites,
                 onToggleFavorite = { viewModel.toggleFavorite(it) }
             )
+            "tools" -> ToolsTabContent(
+                modifier = Modifier.padding(padding),
+                onNavigateToReceiverHelper = { navController.navigate(Screen.ReceiverHelper.route) },
+                onNavigateToSignalHelper = { navController.navigate(Screen.SignalHelper.route) }
+            )
         }
+    }
+}
+
+@Composable
+fun ToolsTabContent(
+    modifier: Modifier = Modifier,
+    onNavigateToReceiverHelper: () -> Unit,
+    onNavigateToSignalHelper: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = KurdishStrings.TOOLS_TITLE,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
+        FeatureCard(
+            icon = Icons.Default.SettingsInputComponent,
+            title = KurdishStrings.RECEIVER_HELPER,
+            description = "فێربە چۆن ڕیسیڤەرەکەت ڕێکدەخەیت",
+            onClick = onNavigateToReceiverHelper
+        )
+        
+        FeatureCard(
+            icon = Icons.Default.SignalCellularAlt,
+            title = KurdishStrings.SIGNAL_HELPER,
+            description = "باشترین ڕێگا بۆ ڕێکخستنی سیگناڵ",
+            onClick = onNavigateToSignalHelper
+        )
     }
 }
 
@@ -136,6 +180,7 @@ fun HomeTabContent(
     modifier: Modifier = Modifier,
     userLocation: Location? = null,
     onRefreshLocation: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
     totalSatellites: Int = 0,
     favoriteCount: Int = 0,
     onNavigateToSatellites: () -> Unit = {},
@@ -182,12 +227,21 @@ fun HomeTabContent(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    IconButton(onClick = onRefreshLocation) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh location",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                    Row {
+                        IconButton(onClick = onNavigateToSettings) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Location settings",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = onRefreshLocation) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Refresh location",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
                 
@@ -376,10 +430,13 @@ fun QuickActionButton(
 fun FeatureCard(
     icon: ImageVector,
     title: String,
-    description: String
+    description: String,
+    onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant

@@ -58,8 +58,9 @@ class HomeViewModel @Inject constructor(
 
     private fun loadUserLocation() {
         viewModelScope.launch {
-            val location = getUserLocationUseCase(context)
-            _userLocation.value = location
+            getUserLocationUseCase.getLocationUpdates(context).collect { location ->
+                _userLocation.value = location
+            }
         }
     }
 

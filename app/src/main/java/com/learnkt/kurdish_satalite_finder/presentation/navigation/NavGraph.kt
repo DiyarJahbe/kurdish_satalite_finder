@@ -81,6 +81,21 @@ fun NavGraph(
                     }
                 )
             }
+            composable(Screen.LocationSettings.route) {
+                com.learnkt.kurdish_satalite_finder.presentation.screens.settings.LocationSettingsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.ReceiverHelper.route) {
+                com.learnkt.kurdish_satalite_finder.presentation.screens.tools.ReceiverHelperScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(Screen.SignalHelper.route) {
+                com.learnkt.kurdish_satalite_finder.presentation.screens.tools.SignalHelperScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
             composable(
                 route = Screen.Compass.route,
                 arguments = listOf(navArgument("satelliteId") { type = NavType.IntType })
